@@ -13,6 +13,7 @@ void addArraysInto(float *result, float *a, float *b, int N)
 {
   int index = threadIdx.x + blockIdx.x * blockDim.x;
   int stride = blockDim.x * gridDim.x;
+  printf("%d) ThIdx.x=%d, BlkIdx.x=%d, BlkDim=%d, stride=%d \n",index, threadIdx.x, blockIdx.x, blockDim.x, stride);
 
   for(int i = index; i < N; i += stride)
   {
@@ -72,6 +73,7 @@ int main()
   cudaError_t addArraysErr;
   cudaError_t asyncErr;
 
+  printf("numberOfBlocks=%d,  threadsPerBlock=%d, N=%d\n",numberOfBlocks, threadsPerBlock, N);
   addArraysInto<<<numberOfBlocks, threadsPerBlock>>>(c, a, b, N);
 
   addArraysErr = cudaGetLastError();
