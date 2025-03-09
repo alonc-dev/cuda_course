@@ -1,0 +1,184 @@
+run w/ and w/o   cudaMemPrefetchAsync(c, size, deviceId);
+
+
+no Prefetch
+================
+!nvcc -o vector-add-no-prefetch 01-vector-add/01-vector-add.cu -run
+!nsys profile --stats=true -o vector-add-no-prefetch-report ./vector-add-no-prefetch
+
+Warning: LBR backtrace method is not supported on this platform. DWARF backtrace method will be used.
+WARNING: The command line includes a target application therefore the CPU context-switch scope has been set to process-tree.
+Collecting data...
+Success! All values calculated correctly.
+Processing events...
+Saving temporary "/tmp/nsys-report-e17e-0fb2-1989-8e98.qdstrm" file to disk...
+
+Creating final output files...
+Processing [==============================================================100%]
+Saved report file to "/tmp/nsys-report-e17e-0fb2-1989-8e98.qdrep"
+Exporting 10009 events: [=================================================100%]
+
+Exported successfully to
+/tmp/nsys-report-e17e-0fb2-1989-8e98.sqlite
+
+
+CUDA API Statistics:
+
+ Time(%)  Total Time (ns)  Num Calls   Average    Minimum    Maximum           Name         
+ -------  ---------------  ---------  ----------  --------  ---------  ---------------------
+    62.3        165644965          3  55214988.3     14060  165593345  cudaMallocManaged    
+    29.0         77087625          1  77087625.0  77087625   77087625  cudaDeviceSynchronize
+     8.7         23004346          3   7668115.3   7016485    8929547  cudaFree             
+     0.0           106851          1    106851.0    106851     106851  cudaLaunchKernel     
+
+
+
+CUDA Kernel Statistics:
+
+ Time(%)  Total Time (ns)  Instances   Average    Minimum   Maximum                      Name                    
+ -------  ---------------  ---------  ----------  --------  --------  -------------------------------------------
+   100.0         77136584          1  77136584.0  77136584  77136584  addVectorsInto(float*, float*, float*, int)
+
+
+
+CUDA Memory Operation Statistics (by time):
+
+ Time(%)  Total Time (ns)  Operations  Average  Minimum  Maximum              Operation            
+ -------  ---------------  ----------  -------  -------  -------  ---------------------------------
+    80.0         43385555        8133   5334.5     1790   125984  [CUDA Unified Memory memcpy HtoD]
+    20.0         10828448         768  14099.5     1312    83360  [CUDA Unified Memory memcpy DtoH]
+
+
+
+CUDA Memory Operation Statistics (by size in KiB):
+
+   Total     Operations  Average  Minimum  Maximum               Operation            
+ ----------  ----------  -------  -------  --------  ---------------------------------
+ 393216.000        8133   48.348    4.000  1020.000  [CUDA Unified Memory memcpy HtoD]
+ 131072.000         768  170.667    4.000  1020.000  [CUDA Unified Memory memcpy DtoH]
+
+
+
+Operating System Runtime API Statistics:
+
+ Time(%)  Total Time (ns)  Num Calls   Average    Minimum   Maximum        Name     
+ -------  ---------------  ---------  ----------  -------  ---------  --------------
+    85.8       1768279932         98  18043672.8    25480  100143591  poll          
+     9.2        188688452         86   2194051.8    18300   20534037  sem_timedwait 
+     2.9         59194914        624     94863.6     1010   13406651  ioctl         
+     1.1         22900566         22   1040934.8     1060    8891217  mmap          
+     0.9         19083148         22    867415.8     1090   18989808  fopen         
+     0.1          1925558         64     30086.8     2490     547787  mmap64        
+     0.0           795808         76     10471.2     3040      36780  open64        
+     0.0           140944          4     35236.0    27931      44931  pthread_create
+     0.0           140262         11     12751.1     8180      20420  write         
+     0.0            49890          1     49890.0    49890      49890  fgets         
+     0.0            38480         13      2960.0     1460       4620  munmap        
+     0.0            28400          5      5680.0     2550       7420  open          
+     0.0            14480          6      2413.3     1100       5330  fclose        
+     0.0            14060          7      2008.6     1010       4640  read          
+     0.0            12370          3      4123.3     1060       6960  fgetc         
+     0.0            10130          2      5065.0     2970       7160  socket        
+     0.0             9010          3      3003.3     2000       3710  fread         
+     0.0             7290          1      7290.0     7290       7290  connect       
+     0.0             5740          1      5740.0     5740       5740  pipe2         
+     0.0             5120          2      2560.0     1100       4020  fcntl         
+     0.0             1540          1      1540.0     1540       1540  bind          
+
+Unable to create output file /dli/task/vector-add-no-prefetch-report.qdrep : File exists
+Use `--force-overwrite true` to override existing files.
+Please manually fetch report file(s) from:
+* /tmp/nsys-report-e17e-0fb2-1989-8e98.qdrep
+* /tmp/nsys-report-e17e-0fb2-1989-8e98.sqlite
+
+
+with prefetch
+----------------
+
+Warning: LBR backtrace method is not supported on this platform. DWARF backtrace method will be used.
+WARNING: The command line includes a target application therefore the CPU context-switch scope has been set to process-tree.
+Collecting data...
+Success! All values calculated correctly.
+Processing events...
+Saving temporary "/tmp/nsys-report-8838-8a83-dac8-7513.qdstrm" file to disk...
+
+Creating final output files...
+Processing [==============================================================100%]
+Saved report file to "/tmp/nsys-report-8838-8a83-dac8-7513.qdrep"
+Exporting 2079 events: [==================================================100%]
+
+Exported successfully to
+/tmp/nsys-report-8838-8a83-dac8-7513.sqlite
+
+
+CUDA API Statistics:
+
+ Time(%)  Total Time (ns)  Num Calls   Average    Minimum    Maximum           Name         
+ -------  ---------------  ---------  ----------  --------  ---------  ---------------------
+    73.7        158700522          3  52900174.0     13810  158654331  cudaMallocManaged    
+    10.6         22773864          3   7591288.0   6702499    9251565  cudaFree             
+     9.7         20852564          3   6950854.7    175392   11303606  cudaMemPrefetchAsync 
+     6.0         12956064          1  12956064.0  12956064   12956064  cudaDeviceSynchronize
+     0.0            32400          1     32400.0     32400      32400  cudaLaunchKernel     
+
+
+
+CUDA Kernel Statistics:
+
+ Time(%)  Total Time (ns)  Instances  Average   Minimum  Maximum                     Name                    
+ -------  ---------------  ---------  --------  -------  -------  -------------------------------------------
+   100.0           847295          1  847295.0   847295   847295  addVectorsInto(float*, float*, float*, int)
+
+
+
+CUDA Memory Operation Statistics (by time):
+
+ Time(%)  Total Time (ns)  Operations  Average   Minimum  Maximum              Operation            
+ -------  ---------------  ----------  --------  -------  -------  ---------------------------------
+    73.9         31005140         192  161485.1   158752   265695  [CUDA Unified Memory memcpy HtoD]
+    26.1         10925870         768   14226.4     1342   119104  [CUDA Unified Memory memcpy DtoH]
+
+
+
+CUDA Memory Operation Statistics (by size in KiB):
+
+   Total     Operations  Average   Minimum   Maximum               Operation            
+ ----------  ----------  --------  --------  --------  ---------------------------------
+ 393216.000         192  2048.000  2048.000  2048.000  [CUDA Unified Memory memcpy HtoD]
+ 131072.000         768   170.667     4.000  1020.000  [CUDA Unified Memory memcpy DtoH]
+
+
+
+Operating System Runtime API Statistics:
+
+ Time(%)  Total Time (ns)  Num Calls   Average    Minimum   Maximum        Name     
+ -------  ---------------  ---------  ----------  -------  ---------  --------------
+    84.5       1747800875         97  18018565.7    24440  100135990  poll          
+     9.1        188284716         83   2268490.6    14551   20384240  sem_timedwait 
+     4.1         85501089        627    136365.4     1010   11209155  ioctl         
+     1.1         22641924         23    984431.5     1120    9213445  mmap          
+     0.9         19315570         23    839807.4     1020   19221088  fopen         
+     0.1          1891019         64     29547.2     2500     567686  mmap64        
+     0.1          1366374          2    683187.0    70531    1295843  sem_wait      
+     0.0           772769         76     10168.0     3300      33150  open64        
+     0.0           226443          5     45288.6    30180      71951  pthread_create
+     0.0           156900         12     13075.0     8470      18400  write         
+     0.0            48390          1     48390.0    48390      48390  fgets         
+     0.0            46110         11      4191.8     1320      14380  munmap        
+     0.0            29161          5      5832.2     2440       8541  open          
+     0.0            16590          9      1843.3     1030       3350  read          
+     0.0            14360          3      4786.7     1730       7740  fgetc         
+     0.0            12120          7      1731.4     1010       3500  fclose        
+     0.0            12100          2      6050.0     3550       8550  socket        
+     0.0             9200          3      3066.7     1550       4510  fread         
+     0.0             8360          1      8360.0     8360       8360  connect       
+     0.0             7360          3      2453.3     1000       5300  fcntl         
+     0.0             6930          1      6930.0     6930       6930  pipe2         
+     0.0             1690          1      1690.0     1690       1690  bind          
+     0.0             1030          1      1030.0     1030       1030  listen        
+
+Unable to create output file /dli/task/vector-add-no-prefetch-report.qdrep : File exists
+Use `--force-overwrite true` to override existing files.
+Please manually fetch report file(s) from:
+* /tmp/nsys-report-8838-8a83-dac8-7513.qdrep
+* /tmp/nsys-report-8838-8a83-dac8-7513.sqlite
